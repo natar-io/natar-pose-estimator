@@ -1,0 +1,14 @@
+%YAML:1.0
+Cameras:
+   - Eye Cam
+Projectors:
+   []
+Eye Cam:
+   imageWidth: 640
+   imageHeight: 480
+   responseGamma: 0.
+   cameraMatrix: !!opencv-matrix
+      rows: 3
+      cols: 3
+      dt: d
+      data: [581.0, 0.0, 312.0, 0.0, 563.0, 235.0, 0.0, 0.0, 1.0 ]

@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>tech.lity.rea</groupId>
+    <artifactId>nectar-pose-estimator</artifactId>
+    <version>0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <javacpp.version>1.4</javacpp.version>
+    </properties>
+    
+    <repositories>
+        <repository>
+            <id>clojars.org</id>
+            <url>http://clojars.org/repo</url>
+        </repository>
+
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+
+        <repository>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <layout>default</layout>
+            <url>http://repo1.maven.org/maven2</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        
+        <repository>
+            <id>public</id>
+            <name>RealityTech public repository</name>
+            <url>http://forum.rea.lity.tech:8081/repository/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        
+    </repositories>
+    <dependencies>
+<!--        <dependency>
+            <groupId>org.openni</groupId>
+            <artifactId>OpenNI</artifactId>
+            <version>2.3.1</version>
+        </dependency>-->
+        
+        <!-- https://mvnrepository.com/artifact/commons-cli/commons-cli -->
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+<!--        
+         <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>2.12.0</version>
+        </dependency>  
+        
+            <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-transport-native-epoll</artifactId>
+        <version>4.1.25.Final</version>
+    </dependency>
+        
+            <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-all</artifactId>
+        <version>4.1.25.Final</version>
+    </dependency>
+    
+     https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-simple</artifactId>
+    <version>1.7.25</version>
+</dependency>
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-api</artifactId>
+    <version>1.7.25</version>
+</dependency>-->
+
+
+        <!--Processing core-->
+        <dependency>
+            <groupId>org.processing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.3.6</version>
+        </dependency>
+
+        <!--Processing OpenGL-->
+<!--        <dependency>
+            <groupId>org.jogamp.jogl</groupId>
+            <artifactId>jogl</artifactId>
+            <version>2.3.2</version>
+        </dependency>-->
+        
+        <!--        <dependency>
+            <groupId>fr.inria</groupId>
+            <artifactId>papart</artifactId>
+            <version>1.2.1-SNAPSHOT</version>
+        </dependency>        -->
+        <!--We distribute with PapARt-->
+        
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>javacv</artifactId>
+            <version>${javacpp.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>javacv-platform</artifactId>
+            <version>${javacpp.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>javacpp</artifactId>
+            <version>${javacpp.version}</version>
+        </dependency>
+        <!-- Inport code taken from JavaCV-->
+
+        <dependency>
+            <groupId>org.bytedeco.javacpp-presets</groupId>
+            <artifactId>opencv</artifactId>
+            <version>3.4.0-${javacpp.version}</version>
+        </dependency>
+        
+             <dependency>
+            <groupId>org.clojars.hozumi</groupId>
+            <artifactId>toxiclibscore</artifactId>
+            <version>0022</version>
+        </dependency>
+     
+     
+<!--        <dependency>
+            <groupId>org.bytedeco.javacpp-presets</groupId>
+            <artifactId>ffmpeg-platform</artifactId>
+            <version>3.4.1-1.4</version>
+        </dependency>-->
+<!--        <dependency>
+            <groupId>org.bytedeco.javacpp-presets</groupId>
+            <artifactId>flycapture-platform</artifactId>
+            <version>2.11.3.121-1.4</version>
+        </dependency>-->
+        <!--        <dependency>
+            <groupId>org.bytedeco.javacpp-presets</groupId>
+            <artifactId>libdc1394</artifactId>
+            <version>2.2.4-${javacpp.version}</version>
+        </dependency>-->
+<!--        <dependency>
+            <groupId>org.bytedeco.javacpp-presets</groupId>
+            <artifactId>libfreenect</artifactId>   
+            <version>0.5.3-1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bytedeco.javacpp-presets</groupId>
+            <artifactId>libfreenect2</artifactId>
+            <version>0.2.0-${javacpp.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bytedeco.javacpp-presets</groupId>
+            <artifactId>librealsense</artifactId>
+            <version>1.12.1-1.4.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bytedeco.javacpp-presets</groupId>
+            <artifactId>videoinput</artifactId>
+            <version>0.200-${javacpp.version}</version>
+        </dependency>-->
+<!--        <dependency>
+            <groupId>org.bytedeco.javacpp-presets</groupId>
+            <artifactId>artoolkitplus</artifactId>
+            <version>2.3.1-${javacpp.version}</version>
+        </dependency>-->
+<!--        <dependency>
+            <groupId>org.bytedeco.javacpp-presets</groupId>
+            <artifactId>flandmark</artifactId>
+            <version>1.07-${javacpp.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>1.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.processing</groupId>
+            <artifactId>video</artifactId>
+            <version>3.2.3</version>
+        </dependency>-->
+        
+        
+        <!--        <dependency>
+            <groupId>com.googlecode.gstreamer-java</groupId>
+            <artifactId>gstreamer-java</artifactId>
+            <version>1.5</version>
+        </dependency>-->
+        
+   
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>
+                                        tech.lity.rea.nectar.FileLoader
+                                    </mainClass>
+                                </manifest>
+                            </archive>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!--            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>tech.lity.rea.nectar.SeeThrough</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>-->
+            
+            <!--            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <transformers>
+                                <transformer implementation=
+                      "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>tech.lity.rea.nectar.SeeThrough</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+            
+            <!--             <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>-->
+        </plugins>
+    </build>
+    <profiles>
+        <profile>
+            <id>windows_profile</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <os.type>windows</os.type>
+                <os.arch>amd64</os.arch>
+            </properties>
+        </profile>
+        <profile>
+            <id>linux_profile</id>
+            <activation>
+                <os>
+                    <family>Linux</family>
+                </os>
+            </activation>
+            <properties>
+                <os.type>linux</os.type>
+                <os.arch>amd64</os.arch>
+            </properties>
+        </profile>
+        <profile>
+            <id>osx_profile</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <os.type>osx</os.type>
+                <os.arch>universal</os.arch>
+            </properties>
+        </profile>
+    </profiles>
+</project>
