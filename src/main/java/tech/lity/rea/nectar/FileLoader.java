@@ -12,11 +12,14 @@ import java.util.logging.Logger;
 import processing.core.*;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
+import processing.data.XML;
 import redis.clients.jedis.BinaryJedisPubSub;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 import tech.lity.rea.nectar.calibration.files.HomographyCalibration;
 import tech.lity.rea.nectar.calibration.files.ProjectiveDeviceCalibration;
+import tech.lity.rea.nectar.tracking.MarkerList;
+import tech.lity.rea.nectar.tracking.MarkerSVGReader;
 
 /**
  *
@@ -26,7 +29,7 @@ import tech.lity.rea.nectar.calibration.files.ProjectiveDeviceCalibration;
 public class FileLoader {
 
     static Jedis redis;
- 
+
     // TODO: add hostname ?
     public static final String OUTPUT_PREFIX = "nectar:";
     public static final String OUTPUT_PREFIX2 = ":camera-server:camera";
@@ -35,8 +38,14 @@ public class FileLoader {
     static String defaultHost = "jiii-mi";
     static String defaultName = OUTPUT_PREFIX + defaultHost + OUTPUT_PREFIX2 + "#0";
 
-    static ProjectiveDeviceP cameraDevice; 
-    
+    static ProjectiveDeviceP cameraDevice;
+    static MarkerList markersFromSVG;
+
+    static void loadMarkerList(String fileName) {
+        XML xml = new XML(fileName);
+        markersFromSVG = (new MarkerSVGReader(xml)).getList();
+    }
+
     static public void main(String[] passedArgs) {
 
         connectRedis();
@@ -46,6 +55,12 @@ public class FileLoader {
             Path currentRelativePath = Paths.get("");
             String path = currentRelativePath.toAbsolutePath().toString();
 
+//            System.out.println("uri:" + path + "/data/calib1.svg");
+//            loadMarkerList(path + "/data/calib1.svg");
+            loadMarkerList(path + "/data/A4-default.svg");
+            
+            System.out.println("MARKER MODEL: " + markersFromSVG.toString());
+            
             PMatrix3D camProjExtrinsics = loadCalibration(path + "/data/camProjExtrinsics.xml");
             camProjExtrinsics.print();
 
@@ -58,8 +73,8 @@ public class FileLoader {
             // COLOR
             ProjectiveDeviceP pdp = ProjectiveDeviceP.loadCameraDevice(path + "/data/calibration-AstraS-rgb.yaml");
             redis.set(OUTPUT_PREFIX + defaultHost + ":calibration:astra-s-rgb", pdp.toJSON().toString());
-            cameraDevice = pdp; 
-            
+            cameraDevice = pdp;
+
             // DEPTH
             pdp = ProjectiveDeviceP.loadCameraDevice(path + "/data/calibration-AstraS-depth.yaml");
             redis.set(OUTPUT_PREFIX + defaultHost + ":calibration:astra-s-depth", pdp.toJSON().toString());
@@ -76,10 +91,9 @@ public class FileLoader {
             Logger.getLogger(FileLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    
-    
+
     class RedisThread extends Thread {
+
         public void run() {
             byte[] id = defaultName.getBytes();
             // Subscribe tests
@@ -87,15 +101,15 @@ public class FileLoader {
 //        byte[] id = defaultName.getBytes();
             redis.subscribe(l, markersChannels);
         }
-    }      
-    
+    }
+
     String markersChannels = "custom:markers:detected-markers";
 
     class MyListener extends JedisPubSub {
 
         // Listen to "camera
         public void onMessage(String channel, String message) {
-            
+
             // TODO: 
             // Read the message with the markers. 
         }
@@ -115,9 +129,8 @@ public class FileLoader {
         public void onPMessage(String pattern, String channel, String message) {
         }
     }
-    
-    
-       public static PMatrix3D loadCalibration(String fileName) {
+
+    public static PMatrix3D loadCalibration(String fileName) {
 //        File f = new File(sketchPath() + "/" + fileName);
         File f = new File(fileName);
         if (f.exists()) {
