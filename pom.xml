@@ -254,7 +254,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        tech.lity.rea.nectar.FileLoader
+                                        tech.lity.rea.nectar.PoseEstimator
                                     </mainClass>
                                 </manifest>
                             </archive>
