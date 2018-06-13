@@ -128,17 +128,20 @@ public class FileLoader {
             redis.subscribe(l, markersChannels);
         }
     }
-    
-    static void sendPose(String message){
 
-            DetectedMarker[] markers = parseMarkerList(message);
-            PMatrix3D pose = DetectedMarker.compute3DPos(markers, markersFromSVG, cameraDevice);
-            
-            JSONArray poseJson = ProjectiveDeviceP.PMatrixToJSON(pose);
-            
-            System.out.println("Pose: " + poseJson.toString());
-            redisSend.set("custom:image:detected-pose", poseJson.toString());        
-            redisSend.publish("custom:image:detected-pose", poseJson.toString());        
+    static void sendPose(String message) {
+
+        DetectedMarker[] markers = parseMarkerList(message);
+        if(markers.length < 1){
+            System.out.println("No markers -> no pose");
+            return;
+        }
+        PMatrix3D pose = DetectedMarker.compute3DPos(markers, markersFromSVG, cameraDevice);
+        JSONArray poseJson = ProjectiveDeviceP.PMatrixToJSON(pose);
+
+        System.out.println("Pose: " + poseJson.toString());
+        redisSend.set("custom:image:detected-pose", poseJson.toString());
+        redisSend.publish("custom:image:detected-pose", poseJson.toString());
     }
 
     static DetectedMarker[] parseMarkerList(String jsonMessage) {
@@ -146,9 +149,14 @@ public class FileLoader {
         DetectedMarker detectedMarkers[] = new DetectedMarker[0];
 //        Marker m = new Marker(0, corners);
         JSONObject msg = JSONObject.parse(jsonMessage);
-        System.out.println("json: " + msg.getJSONArray("markers").size());
+
+        if (msg == null) {
+            return detectedMarkers;
+        }
+//        System.out.println("json: " + msg.getJSONArray("markers").size());
 
         JSONArray markers = msg.getJSONArray("markers");
+
         if (markers != null && markers.size() > 0) {
             detectedMarkers = new DetectedMarker[markers.size()];
             for (int i = 0; i < markers.size(); i++) {
