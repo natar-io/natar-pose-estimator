@@ -234,7 +234,7 @@ public class PoseEstimator {
         if (markers != null && markers.size() > 0) {
             detectedMarkers = new DetectedMarker[markers.size()];
             for (int i = 0; i < markers.size(); i++) {
-                JSONObject m = markers.getJSONObject(0);
+                JSONObject m = markers.getJSONObject(i);
 
                 int id = m.getInt("id");
                 JSONArray corners = m.getJSONArray("corners");

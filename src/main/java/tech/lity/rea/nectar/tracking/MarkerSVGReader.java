@@ -173,6 +173,8 @@ public class MarkerSVGReader {
 
         MarkerSvg marker = new MarkerSvg(id, matrix.get(), size);
 
+        // Warning, this order must be followed in the tracking system.
+        // Top left, Top right, bot left, bot right.
         marker.corners[0] = new PVector(matrix.m02, matrix.m12);
         matrix.translate(size.x, 0);
         marker.corners[1] = new PVector(matrix.m02, matrix.m12);

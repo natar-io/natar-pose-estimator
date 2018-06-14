@@ -46,6 +46,19 @@ public class DetectedMarker implements Cloneable {
         this.corners = corners;
         this.confidence = confidence;
     }
+    
+    @Override
+    public String toString(){
+        return "Marker id: " + id + " corners: " + 
+                corners[0]+ " " +  
+                corners[1]+ " " +  
+                corners[2]+ " " +  
+                corners[3]+ " " +  
+                corners[4]+ " " +  
+                corners[5]+ " " +  
+                corners[6]+ " " +  
+                corners[7];
+    }
 
     public int getId() {
         return id;
@@ -289,7 +302,22 @@ public class DetectedMarker implements Cloneable {
         objectArray = objectPoints.toArray(objectArray);
         imageArray = imagePoints.toArray(imageArray);
 
-        return pdp.estimateOrientation(objectArray, imageArray);
+//        System.out.println("Pose estimation: " + pdp.toString());
+//        System.out.println("Object/image: ");
+//        for(int i = 0; i < k; i++)
+//        {
+//            System.out.println(objectArray[i] + " " + imageArray[i]);
+//        }
+        PMatrix3D position = pdp.estimateOrientation(objectArray, imageArray);
+        
+//        float pageHeight = this.height;
+        float pageHeight = markersFromSVG.getSheetHeight();
+
+        // Invert the scales so that it fits Inkscape's view. 
+        position.scale(1, -1, 1);
+        position.translate(0, -pageHeight, 0);
+        
+        return position;
 //        return pdp.estimateOrientationRansac(objectArray, imageArray);
     }
 
