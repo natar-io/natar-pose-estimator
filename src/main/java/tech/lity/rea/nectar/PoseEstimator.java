@@ -181,14 +181,12 @@ public class PoseEstimator {
             return;
         }
         PMatrix3D pose = DetectedMarker.compute3DPos(markers, markersFromSVG, cameraDevice);
-        
-        if(pose == null){
+
+        if (pose == null) {
             log("Cannot find pose " + message, "");
             return;
         }
         JSONArray poseJson = ProjectiveDeviceP.PMatrixToJSON(pose);
-
-        System.out.println("Pose: " + poseJson.toString());
         if (set) {
             redisSend.set(output, poseJson.toString());
             log("Pose set to " + output, " set " + poseJson.toString());
@@ -220,8 +218,12 @@ public class PoseEstimator {
 
         DetectedMarker detectedMarkers[] = new DetectedMarker[0];
 //        Marker m = new Marker(0, corners);
-        JSONObject msg = JSONObject.parse(jsonMessage);
-
+        JSONObject msg = null;
+        try {
+            msg = JSONObject.parse(jsonMessage);
+        } catch (Exception e) {
+            log("Exception while parsing json." + e.toString() + " \nMessage: " + jsonMessage, "");
+        }
         if (msg == null) {
             return detectedMarkers;
         }
