@@ -13,6 +13,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.bytedeco.javacv.Marker;
@@ -65,6 +66,14 @@ public class PoseEstimator {
     static String testMessage = "{\"markers\":[{\"id\":101,\"dir\":0,\"confidence\":100,\"type\":\"ARTK\",\"center\":[495.66229248046877,137.36204528808595],\"corners\":[528.4631958007813,166.75375366210938,467.1305847167969,167.5231170654297,464.3076171875,109.0,524.7392578125,109.0]},{\"id\":104,\"dir\":0,\"confidence\":100,\"type\":\"ARTK\",\"center\":[177.1398162841797,140.3543701171875],\"corners\":[208.6136932373047,168.848876953125,144.86376953125,169.41928100585938,147.2744140625,110.0,209.93331909179688,110.0]},{\"id\":102,\"dir\":1,\"confidence\":100,\"type\":\"ARTK\",\"center\":[502.210693359375,250.17922973632813],\"corners\":[472.46484375,281.10406494140627,469.58148193359377,219.35861206054688,531.6472778320313,218.14463806152345,535.5087890625,279.6341552734375]},{\"id\":105,\"dir\":1,\"confidence\":100,\"type\":\"ARTK\",\"center\":[175.24224853515626,253.04522705078126],\"corners\":[141.70474243164063,284.3676452636719,143.3638458251953,221.02484130859376,208.11019897460938,220.9053192138672,206.58773803710938,282.7593994140625]},{\"id\":106,\"dir\":1,\"confidence\":100,\"type\":\"ARTK\",\"center\":[284.8018798828125,252.07203674316407],\"corners\":[258.0,278.6250915527344,258.0,224.0,314.0,224.0,314.0,277.7332763671875]},{\"id\":107,\"dir\":0,\"confidence\":100,\"type\":\"ARTK\",\"center\":[392.0487976074219,250.06759643554688],\"corners\":[420.7771911621094,276.8341979980469,365.35504150390627,277.3885803222656,364.02435302734377,224.1168212890625,418.80621337890627,222.5819091796875]},{\"id\":100,\"dir\":1,\"confidence\":100,\"type\":\"ARTK\",\"center\":[508.28436279296877,368.41619873046877],\"corners\":[477.65985107421877,400.4190368652344,474.90478515625,335.2553405761719,538.5796508789063,334.3932189941406,542.3674926757813,398.8800048828125]},{\"id\":103,\"dir\":0,\"confidence\":100,\"type\":\"ARTK\",\"center\":[173.85433959960938,371.16400146484377],\"corners\":[206.0,403.64190673828127,138.6188201904297,405.2336730957031,140.2191162109375,338.0,206.0,338.0]}],\"pose\":[0.0001670950441621244,12816.30078125,911981084672.0,13258579.0,12.264715194702149,6.93794675044046e-7,2.8004915714263918,0.011855416931211949,0.0007411280530504882,11.140938758850098,0.000011216202437935863,1.0724120258487347e-8,12335936.0,3395665.5,0.19462676346302033,0.0000026413042633066654]}";
 
     public static void die(String why) {
+        die(why, false);
+    }
+
+    public static void die(String why, boolean usage) {
+        if (usage) {
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp("PoseEstimator", options);
+        }
         System.out.println(why);
         System.exit(-1);
     }
@@ -84,15 +93,17 @@ public class PoseEstimator {
             System.out.println(verbose);
         }
     }
+    static Options options = new Options();
 
     static public void main(String[] passedArgs) {
 
-        Options options = new Options();
+        options = new Options();
         options.addRequiredOption("i", "input", true, "Input key of marker locations.");
         options.addRequiredOption("cc", "camera-configuration", true, "Camera calibration file.");
         options.addRequiredOption("mc", "marker-configuration", true, "Marker configuration file.");
         options.addOption("p", "path", true, "Optionnal path.");
         // Generic options
+        options.addOption("h", "help", false, "print this help.");
         options.addOption("v", "verbose", false, "Verbose activated.");
         options.addOption("s", "silent", false, "Silent activated.");
         options.addOption("u", "unique", false, "Unique mode, run only once and use get/set instead of pub/sub");
@@ -103,6 +114,7 @@ public class PoseEstimator {
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd;
 
+        // -u -i markers -cc data/calibration-AstraS-rgb.yaml -mc data/A4-default.svg -o pose
         try {
             cmd = parser.parse(options, passedArgs);
 
@@ -113,16 +125,20 @@ public class PoseEstimator {
                 markerFileName = cmd.getOptionValue("mc");
             }
 
+            if (cmd.hasOption("h")) {
+                die("", true);
+            }
+
             if (cmd.hasOption("i")) {
                 input = cmd.getOptionValue("i");
             } else {
-                die("Please set an input key with -i or --input");
+                die("Please set an input key with -i or --input", true);
             }
 
             if (cmd.hasOption("o")) {
                 output = cmd.getOptionValue("o");
             } else {
-                die("Please set an output key with -o or --output ");
+                die("Please set an output key with -o or --output ", true);
             }
 
             if (cmd.hasOption("p")) {
@@ -145,7 +161,8 @@ public class PoseEstimator {
                 port = cmd.getOptionValue("rp");
             }
         } catch (ParseException ex) {
-            Logger.getLogger(PoseEstimator.class.getName()).log(Level.SEVERE, null, ex);
+            die(ex.toString(), true);
+//            Logger.getLogger(PoseEstimator.class.getName()).log(Level.SEVERE, null, ex);
         }
         connectRedis();
 
