@@ -165,7 +165,7 @@ public class PoseEstimator {
                 sendPose(redis.get(input), true);
             } else {
                 MyListener l = new MyListener();
-                redis.subscribe(l, markersChannels);
+                redis.subscribe(l, input);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
