@@ -56,6 +56,7 @@ public class PoseEstimator {
     static private String host = REDIS_HOST;
     static private String port = REDIS_PORT;
     static private boolean isUnique = false;
+    static private boolean isStreamGet = false;
 
     static String defaultHost = "jiii-mi";
     static String defaultName = OUTPUT_PREFIX + defaultHost + OUTPUT_PREFIX2 + "#0";
@@ -103,6 +104,8 @@ public class PoseEstimator {
         options.addRequiredOption("mc", "marker-configuration", true, "Marker configuration file.");
         options.addOption("p", "path", true, "Optionnal path.");
         // Generic options
+
+        options.addOption("sg", "stream-set", false, " stream mode (GET/SET).");
         options.addOption("h", "help", false, "print this help.");
         options.addOption("v", "verbose", false, "Verbose activated.");
         options.addOption("s", "silent", false, "Silent activated.");
@@ -145,6 +148,10 @@ public class PoseEstimator {
                 pathName = cmd.getOptionValue("p");
             }
 
+            if (cmd.hasOption("sg")) {
+                isStreamGet = true;
+            }
+
             if (cmd.hasOption("u")) {
                 isUnique = true;
             }
@@ -177,6 +184,13 @@ public class PoseEstimator {
 //            DetectedMarker[] detectedMarkers = parseMarkerList(testMessage);
 //            PMatrix3D pose = DetectedMarker.compute3DPos(detectedMarkers, markersFromSVG, cameraDevice);
 //            pose.print();
+            if (isStreamGet) {
+                while (true) {
+                    sendPose(redis.get(input), true);
+                    Thread.sleep(20);
+                }
+            }
+
             if (isUnique) {
                 // set
                 sendPose(redis.get(input), true);
