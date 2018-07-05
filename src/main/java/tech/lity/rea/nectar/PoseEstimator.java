@@ -218,12 +218,14 @@ public class PoseEstimator {
             return;
         }
         JSONArray poseJson = ProjectiveDeviceP.PMatrixToJSON(pose);
+                JSONObject matrix = new JSONObject();
+            matrix.setJSONArray("matrix", poseJson);
         if (set) {
-            redisSend.set(output, poseJson.toString());
-            log("Pose set to " + output, " set " + poseJson.toString());
+            redisSend.set(output, matrix.toString());
+            log("Pose set to " + output, " set " + matrix.toString());
         } else {
-            redisSend.publish(output, poseJson.toString());
-            log("Pose updated to " + output, "published " + poseJson.toString());
+            redisSend.publish(output, matrix.toString());
+            log("Pose updated to " + output, "published " + matrix.toString());
         }
     }
 
@@ -299,6 +301,7 @@ public class PoseEstimator {
 
             log(null, "received " + message);
             sendPose(message, false);
+
         }
 
         @Override
